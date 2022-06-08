@@ -99,7 +99,7 @@ int rs_init_global_move_profile(RSHD rshd);
 /**
  * @brief 设置六个关节的最大加速度
  * @param rshd 械臂控制上下文句柄
- * @param max_acc 六个关节的最大加速度，单位(rad/ss)
+ * @param max_acc 六个关节的最大加速度，单位(rad/s^2)
  * @return RS_SUCC 成功 其他失败
  */
 int rs_set_global_joint_maxacc(RSHD rshd, const JointVelcAccParam  *max_acc);
