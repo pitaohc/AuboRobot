@@ -17,7 +17,7 @@
 int _tmain(int argc, _TCHAR* argv[])
 {
     RSHD g_rshd = -1;
-    //setWayPointQueue(g_rshd,"²âÊÔÎ»µã.txt");
+    setWayPointVector("Â·¾¶.txt");
     int res = 0;
     // µÇÂ¼
     res = login(g_rshd, ROBOT_ADDR, ROBOT_PORT); //µÇÂ¼

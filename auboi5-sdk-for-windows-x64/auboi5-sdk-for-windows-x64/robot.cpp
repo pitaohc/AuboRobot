@@ -182,7 +182,7 @@ vector<wayPoint_S> setWayPointVector(string filepath, bool hasHeader)
     //比较结构
     struct cmp {
         bool operator()(const pair<int, wayPoint_S>& left, const pair<int, wayPoint_S>& right) {
-            return left.first < right.first;
+            return left.first > right.first;
         }
     };
     priority_queue<pair<int, wayPoint_S>,vector<pair<int, wayPoint_S>>,cmp> que; //优先队列
