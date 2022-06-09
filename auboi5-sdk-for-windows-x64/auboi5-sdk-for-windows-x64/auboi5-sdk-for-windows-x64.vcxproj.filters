@@ -24,7 +24,7 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="example.h">
+    <ClInclude Include="robot.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -32,13 +32,10 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="auboi5-sdk-for-windows-x64.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="example.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="move_example.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="robot.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
