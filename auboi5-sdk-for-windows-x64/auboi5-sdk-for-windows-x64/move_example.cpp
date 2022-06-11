@@ -17,13 +17,13 @@
 int _tmain(int argc, _TCHAR* argv[])
 {
     RSHD g_rshd = -1;
-    setWayPointVector("路径.txt");
     int res = 0;
     // 登录
     res = login(g_rshd, ROBOT_ADDR, ROBOT_PORT); //登录
     if (!res) {
         return -1;
     }
+    //setWayPointVector(g_rshd,"detectpoint.txt");
     //启动机械臂(必须连接真实机械臂)
     res = robotStartup(g_rshd);
     if (!res) {

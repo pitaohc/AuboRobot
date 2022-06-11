@@ -14,8 +14,8 @@ bool login(RSHD& rshd, const char* addr, int port); //登录
 bool logout(RSHD rshd); //注销
 bool robotStartup(RSHD rshd); //启动
 bool robotShutdown(RSHD rshd);//停止
-void moveTest(RSHD rshd); //移动机械臂
-std::vector<wayPoint_S> setWayPointVector( std::string filepath, bool hasHeader = true);//设置移动路径
+void moveTest(RSHD rshd, Pos biasPos = { 0.0,0.0,0.0 }, Rpy biasRpy = { 0.0,0.0,0.0 });
+std::vector<wayPoint_S> setWayPointVector(RSHD rshd, std::string filepath, bool hasHeader = true);//设置移动路径
 wayPoint_S getWayPoint(RSHD rshd); //得到路点
 Pos getPos(RSHD rshd); //得到坐标
 Ori getOri(RSHD rshd); //得到四元数

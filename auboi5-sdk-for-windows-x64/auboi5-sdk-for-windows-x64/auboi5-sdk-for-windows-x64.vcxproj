@@ -159,6 +159,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <Text Include="detectpoint.txt" />
     <Text Include="测试位点.txt" />
     <Text Include="需求分析.md" />
   </ItemGroup>

@@ -145,26 +145,43 @@ void printRoadPoint(const aubo_robot_namespace::wayPoint_S* wayPoint)
 
     return  :	void
 *********************************************************************/
-void moveTest(RSHD rshd)
+void moveTest(RSHD rshd, Pos biasPos, Rpy biasRpy)
 {
-    //添加节点
-    auto path = setWayPointVector("路径.txt");
-    //移动节点
+    //添加路点
+    auto path = setWayPointVector(rshd,"detectpoint.txt");
+    //移动机器人
     RobotRecongnitionParam param;
     rs_get_robot_recognition_param(rshd, 1, &param);
 
-    wayPoint_S* currentWayPoint_S;
-    for (auto waypoint: path)
+    for (auto basePoint: path) //数据库中读出的基础路点
     {
-        double jointpos[6];
-        for (size_t i = 0; i < 6; i++)
-        {
-            jointpos[i] = waypoint.jointpos[i];
-            //jointpos[i] = que.front().jointpos[i] / 180 * M_PI;
-        }
-        rs_move_joint(rshd, jointpos, true); //移动,，移动参数设置问题
-        rs_get_current_waypoint(rshd, currentWayPoint_S); //得到当前位置
-        printRoadPoint(currentWayPoint_S); //输出当前位置
+        wayPoint_S finalPoint,currentPoint; //最终目标路点,当前路点信息
+        //计算最终位置
+        finalPoint.cartPos.position.y = basePoint.cartPos.position.y + biasPos.y;
+        finalPoint.cartPos.position.x = basePoint.cartPos.position.x + biasPos.x;
+        finalPoint.cartPos.position.z = basePoint.cartPos.position.z + biasPos.z;
+        
+        Rpy baseRpy,finalRpy; //基础的欧拉角，最终的欧拉角
+        rs_quaternion_to_rpy(rshd, &basePoint.orientation, &baseRpy); //从基础的四元数转换为欧拉角
+        //计算最终姿态
+        finalRpy.rx = (baseRpy.rx + biasRpy.rx);
+        finalRpy.ry = (baseRpy.ry + biasRpy.ry);
+        finalRpy.rz = (baseRpy.rz + biasRpy.rz);
+        rs_rpy_to_quaternion(rshd, &finalRpy, &finalPoint.orientation); //最终欧拉角转换为最终的四元数
+
+        rs_get_current_waypoint(rshd, &currentPoint); //得到当前位置
+        rs_inverse_kin(rshd, currentPoint.jointpos, 
+            &finalPoint.cartPos.position, &finalPoint.orientation, 
+            &finalPoint); //反解关节信息
+
+        //移动机器人到对应的关节位置
+        rs_move_joint(rshd, finalPoint.jointpos, true); //移动,移动参数设置问题
+        //rs_move_joint(rshd, basePoint.jointpos, true); //移动,移动参数设置问题
+        //cout << "实际位置\n";
+        //printRoadPoint(&finalPoint); //输出当前位置
+        rs_get_current_waypoint(rshd, &currentPoint); //得到当前位置
+        cout << "当前位置\n";
+        printRoadPoint(&currentPoint); //输出当前位置
         Sleep(2000);
     }
 }
@@ -177,7 +194,7 @@ void moveTest(RSHD rshd)
 
     return  :	queue<wayPoint_S> 一个路点队列
 *********************************************************************/
-vector<wayPoint_S> setWayPointVector(string filepath, bool hasHeader)
+vector<wayPoint_S> setWayPointVector(RSHD rshd,string filepath, bool hasHeader)
 {
     //比较结构
     struct cmp {
@@ -201,15 +218,15 @@ vector<wayPoint_S> setWayPointVector(string filepath, bool hasHeader)
         Pos pos; //坐标
         Rpy rpy; //欧拉角表示
         Ori orientation; //四元数表示
-        input >> id;
+        input >> id; //第一列无用的pointID
         input >> pos.x >> pos.y >> pos.z
             >> rpy.rx >> rpy.ry >> rpy.rz;
-
-        rs_rpy_to_quaternion(-1, &rpy, &orientation); //不知道使用-1是否可行，欧拉角转四元数
         for (size_t i = 0; i < ARM_DOF; i++)
         {
             input >> point.jointpos[i];
         }
+        input >> id;//实际的orderID
+        rs_rpy_to_quaternion(rshd, &rpy, &orientation); //使用-1会执行失败
         point.cartPos.position = pos;
         point.orientation = orientation;
         que.push(make_pair(id,point));

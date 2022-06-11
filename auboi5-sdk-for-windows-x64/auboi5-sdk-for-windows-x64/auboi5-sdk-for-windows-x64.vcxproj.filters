@@ -46,5 +46,8 @@
     <Text Include="需求分析.md">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="detectpoint.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
 </Project>
